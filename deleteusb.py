@@ -1,7 +1,7 @@
 import os
 import subprocess
 import platform
-import test
+import drivePartation
 
 
 def deleteusb():
@@ -12,21 +12,32 @@ def deleteusb():
     results = results.split()
 
     temppath = paths
-    for result in results:
-        temppath += result
 
-        for file in os.listdir(temppath):
-            # deletes only file
-            # if os.path.isfile(f"{paths}/{file}"):
-            #     os.system(f"rm {paths}/{file}")
-            #     print(f"{file} deleted sucessfully!")
+    user_feedback = input(
+        "Are you sure you want to format your usb drive: press y to delete n to cancel: "
+    )
 
-            # deletes everything that starts with day
-            # os.system(f"ls {paths}")
-            if file.startswith("day"):
-                os.system(f"rm -rf {temppath}/{file}")
-                print(f"{file} deleted sucessfully!")
-        temppath = paths
+    if user_feedback == "y" or user_feedback == "yes":
+        # this is the iterative way to delete each file one by one but cannot delete all the file and dir
+
+        # for result in results:
+        #     temppath += result
+        #     looppath = temppath
+        #
+        #     for file in os.listdir(temppath):
+        #         # Warning !!!! delete everything in usb
+        #         # os.system(f"rm -rf {temppath}/{file}")
+        #         print(f"{temppath}/{file} deleted sucessfully!")
+        #         temppath = looppath
+        #     temppath = paths
+
+        # this is the one cmd way to delete all the contents at once it work in every case
+
+        for result in results:
+            temppath += result
+            os.system(f"rm -rf {temppath}/*")
+            print(f"{result} formated sucessfully!")
+            temppath = paths
 
 
 def is_device_mounted(device):
@@ -53,7 +64,7 @@ current_os = platform.system()
 
 
 if current_os == "Linux":
-    partation = test.get_usb_partition()
+    partation = drivePartation.get_usb_partition()
     if partation != None:
         for part in partation:
             data = f"{part}1"
